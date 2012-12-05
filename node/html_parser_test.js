@@ -6,18 +6,19 @@ var htmlparser = require('htmlparser'),
        handler = new htmlparser.DefaultHandler(get_links), //Define the handler,
         parser = new htmlparser.Parser(handler); //and the parser.
 
-function Node_parser(name){
-    this.name = name;
-    console.log("Hello" + name + ", my Node_parser is online now.");
+//Defines the Node_parser class exported at the end of this file
+function Node_parser(){
 }
 
-//Gets the filename (e.g. foo.html) for all the links(<a> tags) in a html file.
+//Gets the filename (e.g. foo.html) for all the links(<a> tags) in a html file
+//and returns them in an array
 function get_links(error,dom){
     if(error)
 	console.log(error);
     else{
-	console.log("parsing started");
-	console.log(dom);
+    var files = [];
+	//console.log("parsing started"); //for debugging
+	//console.log(dom); //for debugging
 	var a_tags = select(dom,'a');
 	a_tags.forEach(get_filename);
     }
@@ -32,11 +33,12 @@ function get_filename(a_tag){
     return filename
 }
 
+//Reads and returns the content of a file
 function load_file(file){
     try{
         var file_data = fs.readFileSync(file);
         console.log(file + " loaded");
-        console.log("file data:\n" + file_data);
+        //console.log("file data:\n" + file_data); //for debugging
         return file_data;
     }catch(err){
         console.log(file + " not loaded: " + err);
@@ -44,6 +46,6 @@ function load_file(file){
     }
 }
 
-var rawHtml = "<html><head>You are what you is</head><body><a href='http://www.google.com/index.html#algo'>blabla</a><a href='http://www.yahoo.com/mail.html'>yahoo</a><a href='http://foo.com/bar.html#wtf'</a></body></html>";
-//parser.parseComplete(load_file("index.html"));
 Node_parser.prototype.load_file = load_file;
+Node_parser.prototype.parser = parser;
+module.exports = Node_parser;
